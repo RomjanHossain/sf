@@ -25,3 +25,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/fonts/
+
+  fonts:
+    - family: CircularStd
+      fonts:
+        - asset: assets/fonts/CircularStd.ttf
