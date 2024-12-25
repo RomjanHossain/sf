@@ -8,11 +8,14 @@ environment:
 
 dependencies:
   bloc: ^8.1.4
+  equatable: ^2.0.7
   flutter:
     sdk: flutter
+  flutter_animate: ^4.5.2
   flutter_bloc: ^8.1.6
   flutter_localizations:
     sdk: flutter
+  flutter_svg: ^2.0.16
   intl: ^0.19.0
 
 dev_dependencies:
@@ -32,3 +35,6 @@ flutter:
     - family: CircularStd
       fonts:
         - asset: assets/fonts/CircularStd.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter.ttf
