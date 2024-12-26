@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:steadfast_task/core/params/extensions.dart';
 import 'package:steadfast_task/core/resources/svgs/svgs.dart';
 import 'package:steadfast_task/core/theme/colors.dart';
 import 'package:steadfast_task/presentation/cubits/weather_days_cubit.dart';
@@ -23,32 +24,42 @@ class WeatherDaysTimelineView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const WeatherDaysTimelineTitle(),
-        const SizedBox(
-          height: 15,
-        ),
-        SizedBox(
-          height: 110,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 7,
-            itemBuilder: (context, index) {
-              return const Padding(
-                padding: EdgeInsets.only(
-                  left: 10,
-                ),
-                child: WeatherTimelineCard(
-                  title: 'Now',
-                  icon: WeatherIconos.sunrise_fill,
-                  temperature: '20°C',
-                ),
-              );
-            },
+    final weatherBloc = context.select((WeatherBloc cubit) => cubit.state);
+    final weekly = weatherBloc.weeklyWeather;
+    if (weekly == null) {
+      return const SizedBox();
+    }
+    return AnimatedContainer(
+      duration: 500.milliseconds,
+      child: Column(
+        children: [
+          const WeatherDaysTimelineTitle(),
+          const SizedBox(
+            height: 15,
           ),
-        ),
-      ],
+          SizedBox(
+            height: 150,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: weekly.list.length,
+              itemBuilder: (context, index) {
+                final currDay = weekly.list[index];
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                  ),
+                  child: WeatherTimelineCard(
+                    title: currDay.dt.toDay(),
+                    icon: WeatherIconos.sunrise_fill,
+                    temperature: currDay.main.temp.toCelsius(),
+                    timeW: currDay.dt.toTime2(),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -58,9 +69,11 @@ class WeatherTimelineCard extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.temperature,
+    required this.timeW,
     super.key,
   });
   final String title;
+  final String timeW;
   final String icon;
   final String temperature;
 
@@ -69,7 +82,7 @@ class WeatherTimelineCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 10,
-        vertical: 15,
+        vertical: 25,
       ),
       margin: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
@@ -86,16 +99,20 @@ class WeatherTimelineCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            title,
-            style: const TextStyle(color: Colors.white),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: SvgPicture.string(icon),
           ),
           Text(
-            temperature,
+            '$temperature °C',
+            style: const TextStyle(color: Colors.white),
+          ),
+          Text(
+            timeW,
+            style: const TextStyle(color: Colors.white),
+          ),
+          Text(
+            title,
             style: const TextStyle(color: Colors.white),
           ),
         ],

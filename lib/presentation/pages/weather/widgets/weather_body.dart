@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:steadfast_task/core/params/extensions.dart';
 import 'package:steadfast_task/core/resources/svgs/svgs.dart';
+import 'package:steadfast_task/data/datasources/remote/api_service/weather_service.dart';
 import 'package:steadfast_task/presentation/pages/weather/bloc/bloc.dart';
 import 'package:steadfast_task/presentation/pages/weather/components/cards.dart';
 import 'package:steadfast_task/presentation/pages/weather/components/weather_days_c.dart';
@@ -20,7 +21,8 @@ class WeatherBody extends StatelessWidget {
     return BlocConsumer<WeatherBloc, WeatherState>(
       builder: (context, state) {
         final theme = Theme.of(context);
-        if (state is WeatherPermissionFirstDenied) {
+        final currWeather = state.currWeather;
+        if (state is WeatherPermissionFirstDenied || currWeather == null) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -39,7 +41,6 @@ class WeatherBody extends StatelessWidget {
           );
         }
         final size = MediaQuery.sizeOf(context);
-        final currWeather = state.currWeather;
         return ListView(
           children: [
             SizedBox(
@@ -115,9 +116,9 @@ class WeatherBody extends StatelessWidget {
               padding: const EdgeInsets.only(
                 top: 50,
               ),
-              decoration: const BoxDecoration(
-                // color: Colors.white.withOpacity(0.3),
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(100),
                   topRight: Radius.circular(100),
                 ),
