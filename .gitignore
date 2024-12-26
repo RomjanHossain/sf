@@ -116,3 +116,4 @@ web
 macos
 windows
 lib/data/models/curr_weather_resp.g.dart
+lib/data/models/weekly_weather_resp.g.dart
