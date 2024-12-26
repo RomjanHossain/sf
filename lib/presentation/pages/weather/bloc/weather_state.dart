@@ -6,21 +6,32 @@ part of 'weather_bloc.dart';
 class WeatherState extends Equatable {
   /// {@macro weather_state}
   const WeatherState({
-    this.customProperty = 'Default Value',
+    this.lat = '0.0',
+    this.lon = '0.0',
+    this.currWeather,
   });
 
   /// A description for customProperty
-  final String customProperty;
+  final String lat;
+  final String lon;
+  final CurrWeatherResp? currWeather;
 
   @override
-  List<Object> get props => [customProperty];
+  List<Object> get props => [
+        lat,
+        lon,
+      ];
 
   /// Creates a copy of the current WeatherState with property changes
   WeatherState copyWith({
-    String? customProperty,
+    String? lat,
+    String? lon,
+    CurrWeatherResp? currWeather,
   }) {
     return WeatherState(
-      customProperty: customProperty ?? this.customProperty,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      currWeather: currWeather ?? this.currWeather,
     );
   }
 }
@@ -31,4 +42,9 @@ class WeatherState extends Equatable {
 class WeatherInitial extends WeatherState {
   /// {@macro weather_initial}
   const WeatherInitial() : super();
+}
+
+class WeatherPermissionFirstDenied extends WeatherState {
+  /// {@macro weather_initial}
+  const WeatherPermissionFirstDenied() : super();
 }
