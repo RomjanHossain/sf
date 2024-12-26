@@ -1,11 +1,11 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:steadfast_task/data/datasources/local/location.dart';
 import 'package:steadfast_task/data/datasources/remote/api_service/weather_service.dart';
 import 'package:steadfast_task/data/models/curr_weather_resp.dart';
+import 'package:steadfast_task/data/models/weekly_weather_resp.dart';
 part 'weather_event.dart';
 part 'weather_state.dart';
 
@@ -35,14 +35,20 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           location.lat,
           location.lon,
         );
+        final weekly = await weatherService.getWeeklyWeather(
+          location.lat,
+          location.lon,
+        );
         emit(
           state.copyWith(
             lat: location.lat,
             lon: location.lon,
             currWeather: resp,
+            weeklyWeather: weekly,
           ),
         );
       }
+      return;
     }
     final currLocation = await Geolocator.getCurrentPosition();
 
@@ -55,6 +61,10 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       locationModel.lat,
       locationModel.lon,
     );
+    final weekly = await weatherService.getWeeklyWeather(
+      locationModel.lat,
+      locationModel.lon,
+    );
     if (state is WeatherPermissionFirstDenied) {
       emit(const WeatherInitial());
     }
@@ -63,6 +73,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         lat: locationModel.lat,
         lon: locationModel.lon,
         currWeather: resp,
+        weeklyWeather: weekly,
       ),
     );
     // save the location

@@ -9,12 +9,14 @@ class WeatherState extends Equatable {
     this.lat = '0.0',
     this.lon = '0.0',
     this.currWeather,
+    this.weeklyWeather,
   });
 
   /// A description for customProperty
   final String lat;
   final String lon;
   final CurrWeatherResp? currWeather;
+  final WeeklyWeatherResp? weeklyWeather;
 
   @override
   List<Object> get props => [
@@ -27,10 +29,12 @@ class WeatherState extends Equatable {
     String? lat,
     String? lon,
     CurrWeatherResp? currWeather,
+    WeeklyWeatherResp? weeklyWeather,
   }) {
     return WeatherState(
       lat: lat ?? this.lat,
       lon: lon ?? this.lon,
+      weeklyWeather: weeklyWeather ?? this.weeklyWeather,
       currWeather: currWeather ?? this.currWeather,
     );
   }
