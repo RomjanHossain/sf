@@ -115,3 +115,4 @@ pubspec.lock
 web
 macos
 windows
+lib/data/models/curr_weather_resp.g.dart
