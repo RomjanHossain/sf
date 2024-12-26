@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:steadfast_task/core/params/extensions.dart';
 import 'package:steadfast_task/core/resources/svgs/svgs.dart';
 import 'package:steadfast_task/presentation/pages/weather/bloc/bloc.dart';
+import 'package:steadfast_task/presentation/pages/weather/components/cards.dart';
 import 'package:steadfast_task/presentation/pages/weather/components/weather_days_c.dart';
 
 /// {@template weather_body}
@@ -15,15 +17,38 @@ class WeatherBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WeatherBloc, WeatherState>(
+    return BlocConsumer<WeatherBloc, WeatherState>(
       builder: (context, state) {
         final theme = Theme.of(context);
+        if (state is WeatherPermissionFirstDenied) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Weather Permission Denied',
+                style: theme.textTheme.headlineMedium!
+                    .copyWith(color: Colors.white),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<WeatherBloc>().add(const CustomWeatherEvent());
+                },
+                child: const Text('Allow Permission'),
+              ),
+            ],
+          );
+        }
         final size = MediaQuery.sizeOf(context);
-        return Column(
+        final currWeather = state.currWeather;
+        return ListView(
           children: [
+            SizedBox(
+              height: size.height / 10,
+            ),
             Text(
-              'Dhaka',
-              style: theme.textTheme.headlineMedium!.copyWith(
+              '${currWeather?.name}',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headlineLarge!.copyWith(
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
                 color: theme.colorScheme.onPrimary,
@@ -42,7 +67,7 @@ class WeatherBody extends StatelessWidget {
                 ),
                 Text(
                   'Current Location',
-                  style: theme.textTheme.bodySmall!
+                  style: theme.textTheme.bodyMedium!
                       .copyWith(color: theme.colorScheme.onPrimary),
                 ),
               ],
@@ -63,23 +88,54 @@ class WeatherBody extends StatelessWidget {
                   width: 10,
                 ),
                 Text(
-                  '132°C',
+                  '${currWeather?.main.temp.toCelsius()}°C',
                   style: theme.textTheme.displayLarge!.copyWith(
                     color: theme.colorScheme.onPrimary,
+                    fontSize: 70,
                   ),
                 ),
               ],
             ),
             //! current status
             Text(
-              'Partly Cloud - H :17°C L : 11°C',
-              style: theme.textTheme.bodySmall!.copyWith(
+              '${currWeather?.weather.firstOrNull?.description} - H :${currWeather?.main.tempMax.toCelsius()}°C L : ${currWeather?.main.tempMin.toCelsius()}°C',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium!.copyWith(
                 color: theme.colorScheme.onPrimary,
               ),
             ),
+            const SizedBox(
+              height: 10,
+            ),
             const WeatherDaysTimeline(),
+            const SizedBox(
+              height: 40,
+            ),
+            Container(
+              padding: const EdgeInsets.only(
+                top: 50,
+              ),
+              decoration: const BoxDecoration(
+                // color: Colors.white.withOpacity(0.3),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(100),
+                  topRight: Radius.circular(100),
+                ),
+              ),
+              // child: const ListOfWeather(),
+              child: const Column(
+                children: [
+                  WeatherCard(),
+                  WeatherWindCard(),
+                  WeatherCloudsCard(),
+                ],
+              ),
+            ),
           ],
         );
+      },
+      listener: (BuildContext context, WeatherState state) {
+        print('Curr state -> $state');
       },
     );
   }

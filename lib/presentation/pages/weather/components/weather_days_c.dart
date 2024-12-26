@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:steadfast_task/core/resources/svgs/svgs.dart';
+import 'package:steadfast_task/core/theme/colors.dart';
 import 'package:steadfast_task/presentation/cubits/weather_days_cubit.dart';
 import 'package:steadfast_task/presentation/pages/weather/bloc/bloc.dart';
 
@@ -23,13 +26,80 @@ class WeatherDaysTimelineView extends StatelessWidget {
     return Column(
       children: [
         const WeatherDaysTimelineTitle(),
-        Center(
-          child: Text(
-            'Hello My Frield',
-            style: Theme.of(context).textTheme.headlineLarge,
+        const SizedBox(
+          height: 15,
+        ),
+        SizedBox(
+          height: 110,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 7,
+            itemBuilder: (context, index) {
+              return const Padding(
+                padding: EdgeInsets.only(
+                  left: 10,
+                ),
+                child: WeatherTimelineCard(
+                  title: 'Now',
+                  icon: WeatherIconos.sunrise_fill,
+                  temperature: '20°C',
+                ),
+              );
+            },
           ),
         ),
       ],
+    );
+  }
+}
+
+class WeatherTimelineCard extends StatelessWidget {
+  const WeatherTimelineCard({
+    required this.title,
+    required this.icon,
+    required this.temperature,
+    super.key,
+  });
+  final String title;
+  final String icon;
+  final String temperature;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 15,
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white.withOpacity(0.3),
+            primaryColor.withOpacity(0.2),
+          ],
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(color: Colors.white),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: SvgPicture.string(icon),
+          ),
+          Text(
+            temperature,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -90,7 +160,7 @@ class TimeLineTileWidget extends StatelessWidget {
         duration: 500.milliseconds,
         child: Text(
           title,
-          style: theme.textTheme.titleSmall!.copyWith(
+          style: theme.textTheme.titleMedium!.copyWith(
             color: theme.colorScheme.onPrimary,
           ),
         ),

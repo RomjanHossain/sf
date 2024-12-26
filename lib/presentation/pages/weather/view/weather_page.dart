@@ -18,7 +18,7 @@ class WeatherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => WeatherBloc(),
+      create: (context) => WeatherBloc()..add(const CustomWeatherEvent()),
       child: const Scaffold(
         body: WeatherView(),
       ),
